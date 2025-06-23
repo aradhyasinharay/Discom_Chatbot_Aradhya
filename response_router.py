@@ -1,13 +1,13 @@
 from static_qa import match_static_qa
-from nlp_setup import preprocess, normalize
-from date_utils import extract_date, extract_time
+from nlp_setup import preprocess
+from normalizer import normalize
 from plant_handler import handle_plant_info
 from procurement_handler import handle_procurement_info
 from intent_handler import get_intent
 from response_handler import generate_response
 from logger import logger
-
-
+from preprocessor import preprocess
+from date_utils import extract_date, extract_time, build_timestamp
 
 
 # ---------------------------
