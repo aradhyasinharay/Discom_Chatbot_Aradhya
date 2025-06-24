@@ -17,10 +17,8 @@ def generate_response(intent, date_str, time_obj, original_message=""):
 
         if intent == "mod":
             try:
-                # Build MOD API URL
                 start_str = ts.strftime("%Y-%m-%d %H:%M:%S")
-                end_str = (ts + timedelta(minutes=1)).strftime("%Y-%m-%d %H:%M:%S")
-                mod_api_url = f"http://127.0.0.1:5000/procurement/range?start={start_str}&end={end_str}"
+                mod_api_url = f"http://127.0.0.1:5000/procurement?start_date={start_str}&price_cap=10"
                 response = requests.get(mod_api_url)
 
                 logger.debug(f"MOD API status: {response.status_code}")
@@ -30,27 +28,19 @@ def generate_response(intent, date_str, time_obj, original_message=""):
                     return "Failed to fetch MOD price data."
 
                 result = response.json()
-                data = result.get("data", [])
 
-                matched = None
-                for item in data:
-                    try:
-                        api_ts = parsedate_to_datetime(item["timestamp"]).replace(tzinfo=None)
-                        logger.debug(f"Comparing MOD timestamp {api_ts} with {ts}")
-                        if api_ts == ts:
-                            matched = item
-                            break
-                    except Exception as e:
-                        logger.warning(f"Skipping item due to timestamp error: {e}")
+                # Access Last_Price directly
+                last_price = result.get("Last_Price", None)
 
-                if matched:
-                    return f"The MOD price at {ts.time()} on {ts.date()} is ₹{matched['last_price']} per unit."
+                if last_price is not None:
+                    return f"The MOD price at {ts.time()} on {ts.date()} is ₹{last_price} per unit."
                 else:
-                    return "No MOD data found for that time."
+                    return "MOD price data not available for that time."
 
             except Exception as e:
                 logger.error(f"MOD API error: {e}")
                 return "Error fetching MOD data."
+
 
 
         elif intent == "cost per block":
