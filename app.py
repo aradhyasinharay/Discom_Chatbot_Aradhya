@@ -4,16 +4,6 @@ from flask_cors import CORS
 import logging
 from logger import logger
 from response_router import get_response
-from static_qa import match_static_qa, static_qa
-from nlp_setup import normalize, preprocess
-from normalizer import normalize
-from preprocessor import preprocess
-from date_utils import extract_date, extract_time, build_timestamp
-from intent_handler import get_intent
-from response_handler import generate_response
-from plant_handler import handle_plant_info
-from procurement_handler import handle_procurement_info
-
 
 
 app = Flask("Aradhya")
